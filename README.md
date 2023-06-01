@@ -7,7 +7,7 @@ pre-conference talk at Markup UK 2023.
 
 ## Seeing the talk
 
-I’ve published it in [GitHub pages](TBD).
+I’ve published it in [GitHub pages](https://ndw.github.io/markupuk-2023-docbook/index.html).
 
 ## Building the talk
 
