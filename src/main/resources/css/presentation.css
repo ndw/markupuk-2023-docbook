@@ -1,6 +1,6 @@
 :root {
-  --default-font-size: 24pt;
-  --default-line-height: 32pt;
+  --default-font-size: 16pt;
+  --default-line-height: 1.5;
 }
 
 h2 {
