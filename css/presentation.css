@@ -1,0 +1,17 @@
+:root {
+  --default-font-size: 24pt;
+  --default-line-height: 32pt;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.colophon h2 {
+    margin-top: 1em;
+}
+
+nav {
+    font-size: 14pt;
+    line-height: 1.5;
+}
