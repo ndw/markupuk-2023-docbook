@@ -3,6 +3,9 @@
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xml:id="book" version="5.1">
+
+<!-- N.B. This version of the talk was not actually presented. -->
+
 <info>
   <title>DocBook and the xslTNG Stylesheets</title>
   <author>
@@ -16,8 +19,6 @@
   <abstract>
     <para>A brief introduction to DocBook and the
     <citetitle>DocBook xslTNG Stylesheets</citetitle>.</para>
-    <para>(Follow along at home,
-    <link xlink:href="https://nwalsh.com/scratch/markupuk2023/">https://nwalsh.com/scratch/markupuk2023/</link>)</para>
   </abstract>
   <revhistory>
     <revision>

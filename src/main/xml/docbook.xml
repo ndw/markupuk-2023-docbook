@@ -16,8 +16,6 @@
   <abstract>
     <para>A brief introduction to formatting paged media with the
     <citetitle>DocBook xslTNG Stylesheets</citetitle>.</para>
-    <para>(Follow along at home,
-    <link xlink:href="https://nwalsh.com/scratch/markupuk2023/">https://nwalsh.com/scratch/markupuk2023/</link>)</para>
   </abstract>
   <revhistory>
     <revision>
