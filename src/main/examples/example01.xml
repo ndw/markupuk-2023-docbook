@@ -1,0 +1,16 @@
+<article xmlns="http://docbook.org/ns/docbook"
+         version="5.2">
+  <info>
+    <title>Hello, world</title>
+    <author>
+      <personname>Norm Tovey-Walsh</personname>
+    </author>
+    <copyright>
+      <year>2023</year>
+      <holder>Norm Tovey-Walsh</holder>
+    </copyright>
+  </info>
+  <para>This is a <emphasis>paragraph</emphasis>.<footnote>
+    <para><quote>Pretty dull, huh?</quote></para></footnote>
+  </para>
+</article>

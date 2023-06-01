@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xml:id="book" version="5.1">
+<info>
+  <title>DocBook and the xslTNG Stylesheets</title>
+  <author>
+    <personname>
+      <firstname>Norman</firstname>
+      <surname>Tovey-Walsh</surname>
+    </personname>
+    <email>ndw@nwalsh.com</email>
+  </author>
+  <pubdate>2023-05-31</pubdate>
+  <abstract>
+    <para>A brief introduction to DocBook and the
+    <citetitle>DocBook xslTNG Stylesheets</citetitle>.</para>
+    <para>(Follow along at home,
+    <link xlink:href="https://nwalsh.com/scratch/markupuk2023/">https://nwalsh.com/scratch/markupuk2023/</link>)</para>
+  </abstract>
+  <revhistory>
+    <revision>
+      <revnumber>1.0.0</revnumber>
+      <date>2023-05-31</date>
+      <authorinitials>ndw</authorinitials>
+      <revremark>Initial draft.</revremark>
+    </revision>
+  </revhistory>
+  <copyright>
+    <year>2023</year>
+    <holder>Norman Tovey-Walsh</holder>
+  </copyright>
+  <?db xlink-style="javascript" page-style="verso"?>
+</info>
+
+<chapter xml:id="what-is-docbook">
+<title>What is DocBook?</title>
+
+<para>DocBook is a very widely used XML vocabulary maintained by the
+<link xlink:href="???">DocBook Technical Committee</link> of
+<link xlink:href="???">OASIS</link>. It is particularly well suited
+to books and papers about computer hardware and software (though it is
+by no means limited to these applications).</para>
+
+<para>DocBook started as an SGML DTD more than 30 years ago. It is now an XML vocabulary
+defined normatively by a RELAX NG grammar and Schematron rules.</para>
+</chapter>
+
+<chapter xml:id="styling-docbook">
+<title>Styling DocBook</title>
+
+<para>The <citetitle>DocBook xslTNG Stylesheets</citetitle> are the
+<phrase revisionflag="deleted">third</phrase><phrase revisionflag="added">fifth</phrase>
+generation of stylesheets that I’ve worked on for transforming DocBook into HTML and print.
+Before them there were:</para>
+
+<itemizedlist>
+<listitem>
+<para>The <citetitle>DocBook XSLT 2.0 Stylesheets</citetitle>, circa 2010.
+</para>
+</listitem>
+<listitem>
+<para>The <citetitle>DocBook XSLT 1.0 Stylesheets</citetitle>, circa 2000 (still maintained).
+</para>
+</listitem>
+<listitem>
+<para>The <citetitle>DocBook DSSSL Stylesheets</citetitle>, circa 1996.
+</para>
+</listitem>
+<listitem>
+<para>The <citetitle>gmat</citetitle> formatter (successor to
+<citetitle>fmat</citetitle>), circa 1994.</para>
+<para>(It was a bailing wire, duct tape, and chewing gum hack that I
+co-wrote for O’Reilly. It used objects in some early beta of Perl 5 to
+build a parse tree of the SGML ESIS from DocBook (1.x? 2.x?) sources.
+It generated <application>troff</application> markup from a recursive
+descent parse of the object tree. The less said, the better.)
+</para>
+</listitem>
+</itemizedlist>
+</chapter>
+
+<chapter xml:id="what-is-docbook-xsltng">
+<title>What is DocBook xslTNG?</title>
+
+<para>The <citetitle>DocBook xslTNG Stylesheets</citetitle> are
+XSLT 3.0 stylesheets for transforming DocBook to HTML. The goals are:</para>
+
+<itemizedlist>
+<listitem>
+<para>Clean, semantic HTML</para>
+</listitem>
+<listitem>
+<para>That looks good “out of the box” (on the web or in print)</para>
+</listitem>
+<listitem>
+<para>Attempts to provide good accessibility features</para>
+</listitem>
+<listitem>
+<para>Is easy to style</para>
+</listitem>
+<listitem>
+<para>And uses modern web features to provide an aesthetically pleasing presentation.</para>
+</listitem>
+</itemizedlist>
+
+<para>The design is generally cleaner and a focus on clean, semantic
+markup makes it easier to style and process in a formatter.</para>
+
+<para>The standard distribution also includes extension functions to perform
+XInclude processing, syntax highlighting of verbatim environments, and extract metadata from
+images.</para>
+
+</chapter>
+
+<chapter xml:id="phases">
+<title>Multi-stage transformation</title>
+
+<para>Multi-stage transformation makes the processing simpler:</para>
+
+<orderedlist>
+<listitem>
+<para>Cleanup the logical structure</para>
+</listitem>
+<listitem>
+<para>Perform XInclude processing</para>
+</listitem>
+<listitem>
+<para>(Convert DocBook 4.x to 5.x)</para>
+</listitem>
+<listitem>
+<para>Perform DocBook transclusion</para>
+</listitem>
+<listitem>
+<para>Profile</para>
+</listitem>
+<listitem>
+<para>Normalize markup</para>
+</listitem>
+<listitem>
+<para>Process annotations</para>
+</listitem>
+<listitem>
+<para>Apply XLink linkbases</para>
+</listitem>
+<listitem>
+<para>(Validate)</para>
+</listitem>
+<listitem>
+<para>Transform to HTML (for online or paged media)</para>
+</listitem>
+</orderedlist>
+
+<para>The last stage is always looking at very consistent markup.</para>
+</chapter>
+
+<chapter xml:id="example01.xml">
+<title>Example 1 (DocBook)</title>
+
+<para>A simple DocBook document:</para>
+<programlisting language="xml"><xi:include parse="text" href="../examples/example01.xml"/>
+</programlisting>
+</chapter>
+
+<chapter xml:id="example01.html">
+<title>Example 1 (HTML)</title>
+
+<para>The HTML output</para>
+<programlisting language="html"
+><xi:include parse="text" href="../../../build/examples/example01.pp"
+             fragid="search=#article#,#/article#"/>
+</programlisting>
+</chapter>
+
+<chapter xml:id="so-what">
+<title>So what?</title>
+
+<itemizedlist>
+<listitem>
+<para>Fair point.</para>
+</listitem>
+<listitem>
+<para>Since this isn’t a DocBook or xslTNG tutorial, let’s just look at some more interesting
+examples.</para>
+</listitem>
+</itemizedlist>
+</chapter>
+
+<chapter xml:id="callouts">
+<title>Callouts</title>
+
+<para>A couple of functions from a Python program.</para>
+
+<programlistingco>
+<areaspec>
+  <!-- Observe that line numbers here are numbers on this listing,
+       not numbers from the underlying file. -->
+  <area xml:id="py.first" linkends="py.first.co" coords="1 70">
+    <alt>This is not the first line of the script</alt>
+  </area>
+  <area xml:id="py.fib" linkends="py.fib.co" coords="6 60">
+    <alt>Closed-form calculation of n’th Fibonacci number</alt>
+  </area>
+  <area xml:id="py.ordinal" linkends="py.ordinal.co" coords="15 60">
+    <alt>Stackoverflow answer to the question “how do I make an
+    ordinal number in Python”?</alt>
+  </area>
+</areaspec>
+<!-- N.B. the syntax highlighter discards leading blank lines -->
+<programlisting language="python" startinglinenumber="15"
+><xi:include href="../python/fibonacci.py"
+parse="text" xpointer="line=14,33"/></programlisting>
+<calloutlist>
+<callout xml:id="py.first.co" arearefs="py.first">
+<para>This is an XIncluded fragment of the <emphasis>actual, executable</emphasis>
+program.</para>
+</callout>
+<callout xml:id="py.fib.co" arearefs="py.fib">
+<para>This is the closed-form solution to finding the
+“<emphasis>n</emphasis>th” Fibonacci number:</para>
+<informalequation>
+<math xmlns="http://www.w3.org/1998/Math/MathML" class="equation" display="block">
+<mfrac>
+  <mrow><mn>1</mn></mrow>
+  <mrow><msqrt><mrow><mn>5</mn></mrow></msqrt></mrow></mfrac> <mfenced separators="" open="(" close=")"><mrow><msup><mrow><mfenced separators="" open="(" close=")"><mrow><mfrac><mrow><mn>1</mn> <mo class="MathClass-bin">+</mo> <msqrt><mrow><mn>5</mn></mrow></msqrt></mrow>
+  <mrow><mn>2</mn></mrow></mfrac>    </mrow></mfenced></mrow><mrow><mi>n</mi></mrow></msup> <mo class="MathClass-bin">-</mo><msup><mrow><mfenced separators="" open="(" close=")"><mrow><mfrac><mrow><mn>1</mn> <mo class="MathClass-bin">-</mo><msqrt><mrow><mn>5</mn></mrow></msqrt></mrow>
+  <mrow><mn>2</mn></mrow></mfrac></mrow></mfenced></mrow>
+  <mrow><mi>n</mi></mrow></msup></mrow></mfenced>
+</math></informalequation>
+<annotation annotates="fibmml">
+<para>If you use <biblioref linkend="MathML"/>, the stylesheets automatically include the
+<biblioref linkend="MathJax"/> libraries (or the MathML rendering libraries of
+your choosing). This allows you to display complex equations, of course, but it
+can also improve the appearance of even simple expressions, such as
+√5.</para>
+<para outputformat="online">(This is an annotation, more about them in
+the next chapter.)</para>
+</annotation>
+<para>The closed-form solution amuses me because I used calculating Fibonacci
+numbers
+(recursively) as an argument for greater expressive power in XSLT 1.0.
+“What if I wanted to number a list with the Fibonacci numbers?”
+</para>
+</callout>
+<callout xml:id="py.ordinal.co" arearefs="py.ordinal">
+<para>Stackoverflow showed me how to print the number as an ordinal.</para>
+</callout>
+</calloutlist>
+</programlistingco>
+</chapter>
+
+<chapter xml:id="annotations.xml">
+<info>
+<title>Annotations (XML)</title>
+</info>
+
+<programlisting language="xml"><xi:include parse="text"
+  href="docbook.xml" fragid="search=#Annotations&#x2c;#,#END ANNO#;before"/>
+</programlisting>
+
+</chapter>
+
+<chapter xml:id="annotations.html">
+<info>
+<title xml:id="atitle">Annotations (HTML)</title>
+</info>
+
+<para>Annotations, as the name
+<phrase xml:id="implies">implies</phrase>, allow you to associate
+annotations with content in your document. Annotations are
+non-local (they’re associated by ID/IDREF not containment)
+and the linking markup is
+<phrase annotations="bi-directional">bi-directional</phrase>.
+The same annotation <phrase xml:id="u1">can</phrase>
+be used
+<phrase annotations="repeated">more than once</phrase>.</para>
+
+<para>Annotations can be rendered with or without JavaScript support.
+With JavaScript, the annotations are popups. Without JavaScript,
+they’re presented at the bottom of the page, similar to footnotes, but
+styled somewhat differently. In paged media,
+annotations are rendered as footnotes and their titles are ignored.
+</para>
+
+<annotation annotates="u1" xml:id="repeated">
+<para>This one is pointless, but it is used twice.</para>
+</annotation>
+
+<annotation annotates="implies">
+<title>Annotation, noun</title>
+<para>According to Merriam-Webster,
+<link xlink:href="https://www.merriam-webster.com/dictionary/annotation">an
+annotation</link> is a note added by way of comment or explanation.
+They give as an example quotation:
+</para>
+<blockquote>
+<para>The bibliography was provided with helpful annotations.</para>
+</blockquote>
+</annotation>
+
+<annotation xml:id="bi-directional">
+<para>Annotations can point to the elements the annotate.
+Alternatively, elements can point to their annotations.</para>
+</annotation>
+<!--END ANNO-->
+</chapter>
+
+<chapter xml:id="xlink">
+<title>Extended Links</title>
+
+<para xml:id="xlinkpara"><biblioref linkend="XLink"/> extended links, like
+<link xlink:href="annotations">annotations</link>, can be non-local.
+The more interesting feature is that
+unlike HTML anchors, they can also have multiple endpoints. Consider
+the following link:
+</para>
+
+<programlisting language="xml"><![CDATA[<phrase xmlns:xlink="http://www.w3.org/1999/xlink"
+        xlink:type="extended">
+  <link xlink:title="DocBook.org"
+        xlink:label="target"
+        xlink:href="http://docbook.org/"
+        xlink:type="locator"/>
+  <link xlink:title="DocBook on Wikipedia"
+        xlink:label="target"
+        xlink:href="http://en.wikipedia.org/wiki/DocBook"
+        xlink:type="locator"/>
+  <citetitle xlink:label="source" xlink:type="resource"
+  >DocBook</citetitle>
+  <link xlink:to="target" xlink:from="source" xlink:type="arc"/>
+</phrase>]]></programlisting>
+
+<para>With JavaScript enabled, this link to
+<phrase xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="extended">
+  <link xlink:title="DocBook.org"
+        xlink:label="target"
+        xlink:href="http://docbook.org/"
+        xlink:type="locator"/>
+  <link xlink:title="DocBook on Wikipedia"
+        xlink:label="target"
+        xlink:href="http://en.wikipedia.org/wiki/DocBook"
+        xlink:type="locator"/>
+  <citetitle xlink:label="source" xlink:type="resource">DocBook</citetitle>
+  <link xlink:to="target" xlink:from="source" xlink:type="arc"/>
+</phrase> has a popup menu to select the link target. Rendered without JavaScript,
+the link choices are presented as alternatives after the link.
+In print media, the link URIs are also shown in
+parenthesis.</para>
+
+<annotation role="wide tall" outputformat="online" annotates="xlinkpara">
+<title>Simplifying link markup</title>
+<para>It’s worth noting that although the XLink vocabulary is defined
+purely in terms of attributes so that it can more easily be embedded in
+other vocabularies, there’s no reason a DocBook customization couldn’t
+use simplified markup to identify links:</para>
+
+<programlisting linenumbering="unnumbered" language="xml"><![CDATA[<extended-link>
+  <target title="DocBook.org" href="http://docbook.org/"/>
+  <target title="DocBook on Wikipedia"
+          href="http://en.wikipedia.org/wiki/DocBook"/>
+  <citetitle>DocBook</citetitle>
+</extended-link>]]></programlisting>
+
+<para>In this example, I’ve adopted the convention that an <tag>extended-link</tag>
+element identifies an extended link with the semantic that <tag>target</tag> element(s)
+identify the link target and any other element identifies the source.</para>
+
+<para>This is equivalent to the attribute form and could easily be translated into it.</para>
+</annotation>
+</chapter>
+
+<chapter xml:id="on-screen-toc">
+<title>On-page navigation</title>
+
+<para>The on-page navigation feature helps the reader keep their place in long pages.</para>
+
+<para outputformat="print">(This feature only applies to online presentations.)</para>
+
+<section>
+<title>Section A</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section B</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section C</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section D</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section E</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section F</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section G</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section H</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+<section>
+<title>Section H.1</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section H.2</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+<section>
+<title>Section I</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+</section>
+<section>
+<title>Section J</title>
+<para>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</para>
+</section>
+</chapter>
+
+<chapter xml:id="html" outputformat="online">
+<title>Paged media</title>
+
+<para>All of these features also work in <link xlink:href="docbook.pdf">paged media</link>
+as well.</para>
+</chapter>
+
+<chapter xml:id="online" outputformat="print">
+<title>Online</title>
+
+<para>All of these features also work <link xlink:href="docbook.html">online</link>
+as well.</para>
+</chapter>
+
+<bibliography>
+<title>References</title>
+
+<bibliomixed xml:id="AntennaHouse"><abbrev>AntennaHouse</abbrev><citetitle
+xlink:href="https://www.antennahouse.com/">AH Formatter</citetitle>. Version 7.0.3.
+</bibliomixed>
+
+<bibliomixed xml:id="CSS"><abbrev>CSS</abbrev><citetitle
+xlink:href="https://www.w3.org/Style/CSS/specs.en.html">CSS Specifications</citetitle>.
+World Wide Web Consortium. 2020.</bibliomixed>
+
+<bibliomixed xml:id="HTML"><abbrev>HTML</abbrev><citetitle
+xlink:href="https://html.spec.whatwg.org/">HTML: Living Standard</citetitle>.
+18 June 2020.</bibliomixed>
+
+<bibliomixed xml:id="MathJax"><abbrev>MathJax</abbrev><citetitle
+xlink:href="https://www.mathjax.org/">MathJax</citetitle>.
+</bibliomixed>
+
+<bibliomixed xml:id="MathML"><abbrev>MathML</abbrev><citetitle
+xlink:href="https://www.w3.org/TR/MathML3/">Mathematical Markup
+Language (MathML) Version 3.0</citetitle>. World Wide Web
+Consortium. 2014.
+</bibliomixed>
+
+<bibliomixed xml:id="Prince"><abbrev>Prince</abbrev><citetitle
+xlink:href="https://www.princexml.com/">Prince</citetitle>.
+Version 13.5.</bibliomixed>
+
+<bibliomixed xml:id="RFC5147"><abbrev>RFC 5147</abbrev><citetitle
+xlink:href="https://tools.ietf.org/html/rfc5147">URI Fragment Identifiers
+for the text/plain Media Type</citetitle>. E. Wilde and M. Duerst,
+editors. Internet Engineering Task Force. 2008.
+</bibliomixed>
+
+<bibliomixed xml:id="XInclude"><abbrev>XInclude</abbrev><citetitle
+xlink:href="https://www.w3.org/TR/xinclude/">XML Inclusions (XInclude)
+Version 1.0 (Second Edition)</citetitle>. World Wide Web
+Consortium. 2006.
+</bibliomixed>
+
+<bibliomixed xml:id="XLink"><abbrev>XLink</abbrev><citetitle
+xlink:href="https://www.w3.org/TR/xlink/">XML Linking Language (XLink) Version 1.1</citetitle>
+World Wide Web Consortium. 2010.
+</bibliomixed>
+</bibliography>
+
+<colophon>
+<title>Colophon</title>
+<para>This book was authored in DocBook 5.2
+with Emacs. It was formatted for presentation with the
+<citetitle>DocBook xslTNG Stylesheets</citetitle> version
+<?DocBook-xslTNG-version?> using
+<phrase role="nobreak"><?system-property xsl:product-name?> <?system-property xsl:product-version?></phrase>.
+<phrase outputformat="print">It was formatted as PDF by Antenna House.</phrase>
+</para>
+</colophon>
+</book>

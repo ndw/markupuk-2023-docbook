@@ -1,0 +1,280 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+
+  configurations.all {
+    resolutionStrategy {
+      exclude group: 'xml-apis', module: 'xml-apis'
+      exclude group: 'xerces', module: 'xercesImpl'
+      force "${saxonGroup}:${saxonEdition}:${saxonVersion}",
+        "org.xmlresolver:xmlresolver:${xmlresolverVersion}"
+    }
+  }
+
+  dependencies {
+    classpath group: saxonGroup, name: saxonEdition, version: saxonVersion
+    classpath group: 'org.docbook', name: 'schemas-docbook', version: docbookVersion
+    classpath group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion
+  }
+}
+
+plugins {
+  id 'com.nwalsh.gradle.saxon.saxon-gradle' version '0.10.5'
+  id 'com.nwalsh.gradle.relaxng.validate' version '0.10.3'
+}
+
+import com.nwalsh.gradle.saxon.SaxonXsltTask
+import com.nwalsh.gradle.relaxng.validate.RelaxNGValidateTask
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+configurations.all {
+  resolutionStrategy {
+    exclude group: 'xml-apis', module: 'xml-apis'
+    exclude group: 'xerces', module: 'xercesImpl'
+    force "${saxonGroup}:${saxonEdition}:${saxonVersion}",
+      "org.xmlresolver:xmlresolver:${xmlresolverVersion}"
+  }
+}
+
+if (saxonEdition == "Saxon-EE") {
+  configurations.all {
+    exclude group: 'net.sf.saxon', module: 'Saxon-HE'
+  }
+}
+
+configurations {
+  transform.extendsFrom documentation
+}
+
+dependencies {
+  documentation (
+    [group: saxonGroup, name: saxonEdition, version: saxonVersion],
+    [group: 'org.docbook', name: 'schemas-docbook', version: docbookVersion],
+    [group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion]
+  )
+}
+
+// ============================================================
+
+task manual_xinclude(
+  type: SaxonXsltTask,
+  dependsOn: ["copyResources", "example01.pp", "example01.pdf.pp"]
+) {
+  inputs.files fileTree(dir: "${projectDir}/src/main/xml")
+  inputs.files fileTree(dir: "${buildDir}/examples", include: "*.pp")
+  inputs.files fileTree(dir: "${projectDir}/src/main/python")
+  inputs.file "${projectDir}/src/main/xsl/xinclude.xsl"
+
+  input "${projectDir}/src/main/xml/docbook.xml"
+  stylesheet "${projectDir}/src/main/xsl/xinclude.xsl"
+  output "${buildDir}/tmp/docbook.xml"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+}
+
+task manual_validate(type: RelaxNGValidateTask, dependsOn: ["manual_xinclude"]) {
+  input manual_xinclude.outputs.files.singleFile
+  output "${buildDir}/xml/docbook.xml"
+  schema "${projectDir}/src/main/rng/docbook.rng"
+}
+
+task manual_augment(type: SaxonXsltTask, dependsOn: ["manual_validate"]) {
+  input manual_validate.outputs.files.singleFile
+  output "${buildDir}/aug/docbook.xml"
+  stylesheet "${projectDir}/src/main/xsl/augment.xsl"
+}
+
+task publish(type: SaxonXsltTask, dependsOn: ["manual_augment"]) {
+  outputs.files fileTree(dir: "${buildDir}/docbook")
+
+  input manual_augment.outputs.files.singleFile
+  output "${buildDir}/docbook/index.html"
+  stylesheet "${projectDir}/src/main/xsl/docbook.xsl"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  parameters (
+    'mediaobject-input-base-uri': "file:${projectDir}/src/main/media/",
+    'mediaobject-output-base-uri': "./",
+    'chunk': 'index.html',
+    'chunk-output-base-uri': "${projectDir}/build/docbook/",
+    'annotation-style': 'javascript',
+    'profile-outputformat': 'online',
+    'persistent-toc': 'true',
+    'pagetoc-elements': 'preface chapter appendix refentry'
+  )
+}
+
+task "publish.pdf.html"(
+  type: SaxonXsltTask,
+  dependsOn: ['publish', 'manual_augment']
+) {
+  input manual_augment.outputs.files.singleFile
+  output "${buildDir}/docbook/docbook.pdf.html"
+  stylesheet "${projectDir}/src/main/xsl/print.xsl"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  parameters(
+    'profile-outputformat': 'print',
+    'page-style': 'book',
+    'resource-base-uri': '',
+    'mediaobject-input-base-uri': "file:${projectDir}/src/main/media/",
+    'mediaobject-output-base-uri': "./",
+  )
+}
+
+task "publish.pdf"(type: Exec, dependsOn: ["copyResources", "publish.pdf.html"]) {
+    inputs.file("${buildDir}/docbook/docbook.pdf.html")
+    inputs.files fileTree(dir: "${buildDir}/docbook/css")
+    outputs.file("${buildDir}/docbook/docbook.pdf")
+    commandLine "${antennahouse}",
+      "-d", "${buildDir}/docbook/docbook.pdf.html",
+      "-o", "${buildDir}/docbook/docbook.pdf"
+}
+
+task "example01.html"(type: SaxonXsltTask) {
+  input "${projectDir}/src/main/examples/example01.xml"
+  output "${buildDir}/examples/example01.html"
+  stylesheet "${projectDir}/src/main/xsl/docbook.xsl"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  parameters (
+  )
+}
+
+task "example01.pdf.html"(type: SaxonXsltTask) {
+  input "${projectDir}/src/main/examples/example01.xml"
+  output "${buildDir}/examples/example01.pdf.html"
+  stylesheet "${projectDir}/src/main/xsl/print.xsl"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  parameters (
+  )
+}
+
+task "example01.pdf"(type: Exec, dependsOn: ["copyResources", "example01.pdf.html"]) {
+    inputs.file("${buildDir}/examples/example01.pdf.html")
+    inputs.files fileTree(dir: "${buildDir}/examples/css")
+    outputs.file("${buildDir}/examples/example01.pdf")
+
+    commandLine "${antennahouse}",
+      "-d", "${buildDir}/examples/example01.pdf.html",
+      "-o", "${buildDir}/examples/example01.pdf"
+}
+
+task "example01.xml"(dependsOn: ["example01.html"]) {
+  doLast {
+    exec {
+      standardOutput = new FileOutputStream(new File("${buildDir}/examples/example01.xml"))
+      commandLine "html5parse",
+        "file://${buildDir}/examples/example01.html"
+    }
+  }
+}
+
+task "example01.pdf.xml"(dependsOn: ["example01.pdf.html"]) {
+  doLast {
+    exec {
+      standardOutput = new FileOutputStream(new File("${buildDir}/examples/example01.pdf.xml"))
+      commandLine "html5parse",
+        "file://${buildDir}/examples/example01.pdf.html"
+    }
+  }
+}
+
+task "example01.pp"(type: SaxonXsltTask, dependsOn: ["example01.xml"]) {
+  input "${buildDir}/examples/example01.xml"
+  output "${buildDir}/examples/example01.pp"
+  stylesheet "${projectDir}/src/main/xsl/prettyprint.xsl"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  parameters (
+  )
+}
+
+task "example01.pdf.pp"(type: SaxonXsltTask, dependsOn: ["example01.pdf.xml"]) {
+  input "${buildDir}/examples/example01.pdf.xml"
+  output "${buildDir}/examples/example01.pdf.pp"
+  stylesheet "${projectDir}/src/main/xsl/prettyprint.xsl"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  parameters (
+  )
+}
+
+task copyResources(dependsOn: ["copyJarResources", "copyStaticResources"]) {
+  // nop
+}
+
+task copyJarResources() {
+  outputs.files fileTree(dir: "${buildDir}/docbook")
+
+  def dbjar = null
+  configurations.documentation.each { path ->
+    if (path.toString().contains("docbook-xslTNG")) {
+      dbjar = path
+    }
+  }
+
+  doLast {
+    if (dbjar == null) {
+      throw new GradleException("Failed to locate DocBook xslTNG jar file")
+    }
+    copy {
+      into "${buildDir}/docbook"
+      from ({ zipTree(dbjar.toString()) }) {
+        include "org/docbook/xsltng/resources/**"
+      }
+      eachFile { fileCopyDetails ->
+        def originalPath = fileCopyDetails.path
+        fileCopyDetails.path = originalPath.replace('org/docbook/xsltng/resources/', '')
+      }
+    }
+    copy {
+      into "${buildDir}/examples"
+      from ({ zipTree(dbjar.toString()) }) {
+        include "org/docbook/xsltng/resources/**"
+      }
+      eachFile { fileCopyDetails ->
+        def originalPath = fileCopyDetails.path
+        fileCopyDetails.path = originalPath.replace('org/docbook/xsltng/resources/', '')
+      }
+    }
+  }
+
+  doLast {
+    delete "${buildDir}/docbook/org"
+    delete "${buildDir}/examples/org"
+  }
+}
+
+task copyStaticResources() {
+  inputs.files fileTree(dir: "${projectDir}/src/main/resources")
+  outputs.files fileTree(dir: "${buildDir}/docbook")
+
+  doLast {
+    copy {
+      into "${buildDir}/docbook"
+      from "${projectDir}/src/main/resources"
+    }
+    copy {
+      into "${buildDir}/docbook"
+      from "${projectDir}/src/main/media"
+      include "*.png"
+    }
+    copy {
+      into "${buildDir}/examples"
+      from "${projectDir}/src/main/resources"
+    }
+  }
+}
+
+// ============================================================
+
+task clean() {
+  delete buildDir
+}
+
+task helloWorld() {
+  doLast {
+    println('Hello, world.')
+  }
+}

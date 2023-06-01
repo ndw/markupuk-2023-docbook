@@ -1,0 +1,20 @@
+/* paged.css */
+
+code {
+    background-color: inherit;
+    border: inherit;
+    border-radius: inherit;
+    padding: inherit;
+}
+
+html.book-style.A4 body .division,
+html.book-style.A4 body .component,
+html.book-style.A4 body.book .list-of-titles {
+    break-before: page;
+}
+
+/* https://github.com/docbook/xslTNG/issues/381 */
+.article-style body > header .copyright {
+  float: none;
+  padding-top: 1em;
+}

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xml:id="book" version="5.1">
+<info>
+  <title>Paged Media with the DocBook xslTNG Stylesheets</title>
+  <author>
+    <personname>
+      <firstname>Norman</firstname>
+      <surname>Tovey-Walsh</surname>
+    </personname>
+    <email>ndw@nwalsh.com</email>
+  </author>
+  <pubdate>2023-06-01</pubdate>
+  <abstract>
+    <para>A brief introduction to formatting paged media with the
+    <citetitle>DocBook xslTNG Stylesheets</citetitle>.</para>
+    <para>(Follow along at home,
+    <link xlink:href="https://nwalsh.com/scratch/markupuk2023/">https://nwalsh.com/scratch/markupuk2023/</link>)</para>
+  </abstract>
+  <revhistory>
+    <revision>
+      <revnumber>2.0.0</revnumber>
+      <date>2023-06-01</date>
+      <authorinitials>ndw</authorinitials>
+      <revremark>Tightned the focus on paged media.</revremark>
+    </revision>
+    <revision>
+      <revnumber>1.0.0</revnumber>
+      <date>2023-05-31</date>
+      <authorinitials>ndw</authorinitials>
+      <revremark>Initial draft.</revremark>
+    </revision>
+  </revhistory>
+  <copyright>
+    <year>2023</year>
+    <holder>Norman Tovey-Walsh</holder>
+  </copyright>
+  <?db xlink-style="javascript" page-style="verso"?>
+</info>
+
+<chapter xml:id="what-is-docbook">
+<title>What is DocBook?</title>
+
+<para>DocBook is a very widely used XML vocabulary maintained by the
+<link xlink:href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=docbook">DocBook
+Technical Committee</link> of
+<link xlink:href="https://www.oasis-open.org/">OASIS</link>. It is particularly well suited
+to books and papers about computer hardware and software (though it is
+by no means limited to these applications).</para>
+
+<itemizedlist>
+<listitem>
+<para>Hierarchy: <tag>set</tag>, <tag>book</tag>, <tag>chapter</tag>, <tag>appendix</tag>,
+<tag>refentry</tag>, <tag>bibliography</tag>, <tag>glossary</tag>, <tag>index</tag>, …</para>
+</listitem>
+<listitem>
+<para>Blocks: <tag>section</tag>, <tag>para</tag>, <tag>table</tag>, <tag>figure</tag>, <tag>example</tag>,
+<tag>equation</tag>, <tag>programlisting</tag>, <tag>cmdsynopsis</tag>, <tag>classsynopsis</tag>, …</para>
+</listitem>
+<listitem>
+<para>Inlines: <tag>emphasis</tag>, <tag>filename</tag>, <tag>replaceable</tag>,
+<tag>foreignphrase</tag>, <tag>methodname</tag>, <tag>mousebutton</tag>, …</para>
+</listitem>
+</itemizedlist>
+
+<para>DocBook started as an SGML DTD more than 30 years ago. It is now an XML vocabulary
+defined normatively by a RELAX NG grammar and Schematron rules.</para>
+</chapter>
+
+<chapter xml:id="styling-docbook">
+<title>Styling DocBook</title>
+
+<para>The <citetitle>DocBook xslTNG Stylesheets</citetitle> are the
+<phrase revisionflag="deleted">third</phrase><phrase revisionflag="added">fifth</phrase>
+generation of stylesheets that I’ve worked on for transforming DocBook into HTML and print.
+Before them there were:</para>
+
+<itemizedlist>
+<listitem>
+<para>The <citetitle>DocBook XSLT 2.0 Stylesheets</citetitle>, circa 2010. (Paged media story: weak)
+</para>
+</listitem>
+<listitem>
+<para>The <citetitle>DocBook XSLT 1.0 Stylesheets</citetitle>, circa 2000 (still maintained).
+(Paged media story: XSL Formatting Objects)
+</para>
+</listitem>
+<listitem>
+<para>The <citetitle>DocBook DSSSL Stylesheets</citetitle>, circa 1996. (Paged media story: part of the
+processor)
+</para>
+</listitem>
+<listitem>
+<para>The <citetitle>gmat</citetitle> formatter (successor to
+<citetitle>fmat</citetitle>), circa 1994.
+(Paged media story: it generated <application>troff</application> markup from a recursive
+descent parse of the object tree. The less said, the better.)
+</para>
+<para>(It was a bailing wire, duct tape, and chewing gum hack that I
+co-wrote for O’Reilly. It used objects in some early beta of Perl 5 to
+build a parse tree of the SGML ESIS from DocBook (1.x? 2.x?) sources.)
+</para>
+</listitem>
+</itemizedlist>
+</chapter>
+
+<chapter xml:id="what-is-docbook-xsltng">
+<title>What is DocBook xslTNG?</title>
+
+<para>The <citetitle>DocBook xslTNG Stylesheets</citetitle> are
+XSLT 3.0 stylesheets for transforming DocBook to HTML. The goals are:</para>
+
+<itemizedlist>
+<listitem>
+<para>Clean, semantic HTML</para>
+</listitem>
+<listitem>
+<para>That looks good “out of the box” (on the web or in print)</para>
+</listitem>
+<listitem>
+<para>With good accessibility hooks</para>
+</listitem>
+<listitem>
+<para>That is easy to style (in large part, perhaps, because of the efforts to generate
+clean HTML)</para>
+</listitem>
+</itemizedlist>
+
+<para>The standard distribution also includes extension functions to
+perform XInclude processing, syntax highlighting of verbatim
+environments, extract metadata from images, and even perform some
+validation.</para>
+</chapter>
+
+<chapter xml:id="fit">
+<title>Five Interesting Things</title>
+
+<para>If you’re interested in seeing more generally what the
+<citetitle>DocBook xslTNG Stylesheets</citetitle> can do online,
+see <link xlink:href="https://xsltng.docbook.org/samples/fit/">Five Interesting Things</link>.
+</para>
+
+<para>(P.S. There are at least seven interesting things now!)
+</para>
+</chapter>
+
+<chapter xml:id="phases">
+<title>Multi-stage transformation</title>
+
+<para>Multi-stage transformation makes the processing simpler:</para>
+
+<orderedlist>
+<listitem>
+<para>Cleanup the logical structure</para>
+</listitem>
+<listitem>
+<para>Perform XInclude processing</para>
+</listitem>
+<listitem>
+<para>(Convert DocBook 4.x to 5.x)</para>
+</listitem>
+<listitem>
+<para>Perform
+<link xlink:href="https://docbook.github.io/documents/transclusion.html">DocBook Transclusion</link></para>
+</listitem>
+<listitem>
+<para>Profile with effectivity attributes</para>
+</listitem>
+<listitem>
+<para>Normalize markup</para>
+</listitem>
+<listitem>
+<para>Process annotations</para>
+</listitem>
+<listitem>
+<para>Apply XLink linkbases</para>
+</listitem>
+<listitem>
+<para>(Validate with RELAX NG)</para>
+</listitem>
+<listitem>
+<para>Transform to HTML (for online or paged media)</para>
+</listitem>
+</orderedlist>
+
+<para>The last stage is always operating on consistent markup.</para>
+</chapter>
+
+<chapter xml:id="more-phases">
+<title>But wait, there’s more</title>
+
+<itemizedlist>
+<listitem>
+<para>The stylesheets can produce three different kinds of output: a
+single-page HTML document (the “natural” transformation of a DocBook
+document into an HTML document), a multi-page HTML document (“chunked”
+output), or HTML designed for use in paged media.</para>
+</listitem>
+<listitem>
+<para>As much as possible, we want to avoid caring about this in the
+DocBook-to-HTML transformation. The “core” xslTNG transformation is
+agnostic to the output type.
+</para>
+</listitem>
+<listitem>
+<para>Document features that need to be rendered differently (annotations,
+footnotes, etc.) are not in their final form in the initial HTML output.
+</para>
+</listitem>
+<listitem>
+<para>A small customization layer is provided for tailoring the output to paged media.
+This includes applying different CSS, for example.</para>
+</listitem>
+<listitem>
+<para>The HTML is transformed with a target in mind: for paged media,
+it generates HTML that can be styled appropriately for bottom-of-the-page footnotes,
+for example, and can add page numbers to cross references.</para>
+</listitem>
+</itemizedlist>
+
+</chapter>
+
+<chapter xml:id="example01.xml">
+<title>Example (DocBook XML)</title>
+
+<para>A simple DocBook document:</para>
+<programlisting language="xml"><xi:include parse="text" href="../examples/example01.xml"/>
+</programlisting>
+</chapter>
+
+<chapter xml:id="example01.html">
+<title>Example (online HTML)</title>
+
+<para>The online HTML output</para>
+<programlisting language="html"
+><xi:include parse="text" href="../../../build/examples/example01.pp"
+             fragid="search=#body#,#/body#"/>
+</programlisting>
+</chapter>
+
+<chapter xml:id="example01.pdf.html">
+<title>Example (paged-media HTML)</title>
+
+<para>The paged media HTML output</para>
+<programlisting language="html"
+><xi:include parse="text" href="../../../build/examples/example01.pdf.pp"
+             fragid="search=#body#,#/body#"/>
+</programlisting>
+</chapter>
+
+<chapter xml:id="example01.pdf">
+<title>Example (PDF)</title>
+
+<para>Sample PDF output. (This <link xlink:href="docbook.pdf">presentation</link> is also
+available as a PDF.)</para>
+
+<mediaobject>
+<alt>The example document as a formatted PDF page.</alt>
+<imageobject>
+<imagedata fileref="page.png"/>
+</imageobject>
+</mediaobject>
+</chapter>
+
+<chapter xml:id="tour">
+<title>A quick tour through some customizations</title>
+
+<para>This presentation is a DocBook book with custom stylesheets and custom CSS.</para>
+
+<para>Let’s take a quick tour…</para>
+
+<para>(Special thanks to Tony who’s identified a number of bugs in the paged media support
+recently. <emphasis>Most</emphasis> of them are now fixed.)</para>
+
+</chapter>
+
+<colophon>
+<title>Colophon</title>
+<para>This book was authored in DocBook 5.2
+with Emacs. It was formatted for presentation with the
+<citetitle>DocBook xslTNG Stylesheets</citetitle> version
+<?DocBook-xslTNG-version?> using
+<phrase role="nobreak"><?system-property xsl:product-name?> <?system-property xsl:product-version?></phrase>.
+<phrase outputformat="print">It was formatted as PDF by Antenna House.</phrase>
+</para>
+</colophon>
+</book>
